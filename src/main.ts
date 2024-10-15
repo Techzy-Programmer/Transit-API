@@ -15,11 +15,16 @@ async function bootstrap() {
     .addTag('transit')
     .build();
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  const document = SwaggerModule.createDocument(app, config, { deepScanRoutes: true });
+  SwaggerModule.setup('docs', app, document);
+
+  app.useGlobalPipes(new ValidationPipe({
+    forbidNonWhitelisted: true,
+    whitelist: true,
+    transform: true
+  }));
 
   app.useGlobalFilters(new NotFoundExceptionFilter());
-  app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
   await app.listen(3000);
 }
